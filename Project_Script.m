@@ -1,40 +1,57 @@
-clear
-clc
+%/////////////////////////////////////////////////////////////////////////////////
+% ECE 497
+% Gillian Holman, Lucy Rukstales, Jacob Huff
+% Acceleration to 1/4 mile
+% 10/5/2020
+%////////////////////////////////////////////////////////////////////////////////
 
-Prrated=65280; % Rated Power in W
-Trrated=210*1.3563; %convert to Nm
-r=0.3; %radius in m - front tire (back tire is 0.32 m)
-ng=2;
-m=197; %197kg
-RiderMass=68; %approximately 150lb rider
-meq=m+RiderMass;
-A=18.3;
-B=0;
-C=0.0282*12.96;%(N/(km/h)^2) to (N/(m/s)^2)
-eta=0.97;
+clear all;
+close all;
+clc;
 
-wrrated=Prrated/Trrated;
-wmrated=wrrated/ng;
-vmrated=wmrated*r;
-dT=1e-3;
+%% Declare bike parameters and constants
+Prrated = 65280;            % Rated power [W]
+Trrated = 210*1.3563;       % Rated torque [N-m]
+rw = 0.3;                   % Front wheel radius [m] - (back tire is 0.32 m)
+Ngb = 2;                    % Gearbox ratio
+ngb = 0.97;                 % Gearbox efficiency
+m = 197;                    % [kg]
+RiderMass = 68;             % Estimate [kg]
+meq = m + RiderMass;        % [kg]
 
-v(1)=0;
-t(1)=0;
-dist(1)=0;
-n=1;
-while (dist<(0.25*1609.34)) %convert miles to meters
-    if (v(n)<vmrated)
-        v(n+1)=v(n)+dT*(ng*eta*Trrated-r*(A+B*v(n)+C*(v(n))^2))/(r*meq);
-    else
-        v(n+1)=v(n)+dT*(eta*((Prrated*r)/(v(n)))-r*(A+B*v(n)+C*(v(n))^2))/(r*meq);
+%% EPA coast-down curve fitting parameters
+A = 18.3;                   % [N]
+B = 0;                      % Not applicable for electric motorcycles
+C = 0.0282*12.96;           % [N/(km/h)^2] to [N/(m/s)^2]
+
+%% Calculate rated velocity
+wrrated = Prrated/Trrated;  % Rated rotor angular velocity [rad/s]
+wmrated = wrrated/Ngb;      % Rated motor angular velocity [rad/s]
+vmrated = wmrated*rw;       % Rated motor velocity [m/s]
+
+%% Initialize vehicle velocity parameters
+dT = 1e-3;                  % Time step [s]
+v(1) = 0;                   % Initial vehicle velocity [m/s]
+t(1) = 0;                   % Initial time [s]
+dist(1) = 0;                % Initial distance [m]
+n = 1;                      % Iterator
+
+%% Accelerate until travel 1/4 miles
+while (dist < (0.25*1609.34))
+    if (v(n) < vmrated)     % Constant Torque mode
+        v(n+1) = v(n) + dT*(Ngb*ngb*Trrated - rw*(A + B*v(n) + C*(v(n))^2))/(rw*meq);
+    else                    % Constant Power mode
+        v(n+1) = v(n) + dT*(ngb*((Prrated*rw)/(v(n))) - rw*(A + B*v(n) + C*(v(n))^2))/(rw*meq);
     end
-    t(n+1)=t(n)+dT;
-    dist=trapz(t(1:length(v)),v);
-    n=n+1;
+    t(n+1) = t(n) + dT;
+    dist = trapz(t(1:length(v)), v);
+    n = n + 1;
 end
-distFinal=trapz(t,v)
-v=((v*3600)/1609.34); %convert m/s to mph
-plot(t,v)
-xlabel('Time')
-ylabel('Velocity')
+distFinal = trapz(t, v)     % Total distance travelled [m]
+v = ((v*3600)/1609.34);     % [m/s] to [mph]
+
+%% Plot velocity vs. time
+plot(t, v)
+xlabel('Time [s]')
+ylabel('Velocity [mph]')
 t(end) %time it takes to complete the quarter mile
