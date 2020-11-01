@@ -40,18 +40,35 @@ n = 1;                      % Iterator
 while (dist < (0.25*1609.34))
     if (v(n) < vmrated)     % Constant Torque mode
         v(n+1) = v(n) + dT*(Ngb*ngb*Trrated - rw*(A + B*v(n) + C*(v(n))^2))/(rw*meq);
+        T(n+1) = Trrated;
+        P(n+1) = Trrated*v(n+1)*Ngb/rw;
     else                    % Constant Power mode
         v(n+1) = v(n) + dT*(ngb*((Prrated*rw)/(v(n))) - rw*(A + B*v(n) + C*(v(n))^2))/(rw*meq);
+        P(n+1) = Prrated;
+        T(n+1) = P(n+1)*rw/v(n+1)/Ngb;
     end
     t(n+1) = t(n) + dT;
     dist = trapz(t(1:length(v)), v);
     n = n + 1;
 end
 distFinal = trapz(t, v)     % Total distance travelled [m]
-v = ((v*3600)/1609.34);     % [m/s] to [mph]
+v_mph = ((v*3600)/1609.34);     % [m/s] to [mph]
 
-%% Plot velocity vs. time
-plot(t, v)
+%% Plot Power and Torque vs. Speed
+figure
+yyaxis right
+plot(v*3.6,P/1000)
+title("Power and Torque vs. Speed")
+xlabel('Speed [km/h]')
+ylabel('Power [kW]')
+yyaxis left
+plot(v*3.6,T)
+ylabel('Torque [N-m]')
+
+%% Plot speed vs. time
+figure
+plot(t, v*3.6)
+title("Speed vs. Time")
 xlabel('Time [s]')
-ylabel('Velocity [mph]')
+ylabel('Velocity [km/h]')
 t(end) %time it takes to complete the quarter mile
