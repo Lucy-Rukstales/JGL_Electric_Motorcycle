@@ -59,21 +59,21 @@ v_mph = ((v*3600)/1609.34);     % [m/s] to [mph]
 %% Plot Power vs. Speed
 figure
 plot(d,P/1000)
-title("Power vs. Distance")
-xlabel('Distance [m]')
-ylabel('Power [kW]')
+title("Power vs. Distance",'FontSize',16)
+xlabel('Distance [m]','FontSize',14)
+ylabel('Power [kW]','FontSize',14)
 
 %% Plot Torque vs. Distance
 figure
 plot(d,T)
-title("Torque vs. Distance")
-xlabel('Distance [m]')
-ylabel('Torque [N-m]')
+title("Torque vs. Distance",'FontSize',16)
+xlabel('Distance [m]','FontSize',14)
+ylabel('Torque [N-m]','FontSize',14)
 
 %% Plot Speed vs. Distance
 figure
 plot(d, v*3.6)
-title("Speed vs. Distance")
-xlabel('Time [m]')
-ylabel('Speed [km/h]')
+title("Speed vs. Distance",'FontSize',16)
+xlabel('Time [m]','FontSize',14)
+ylabel('Speed [km/h]','FontSize',14)
 t(end) %time it takes to complete the quarter mile
