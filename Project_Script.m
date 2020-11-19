@@ -34,6 +34,7 @@ dT = 1e-3;                  % Time step [s]
 v(1) = 0;                   % Initial vehicle velocity [m/s]
 t(1) = 0;                   % Initial time [s]
 dist(1) = 0;                % Initial distance [m]
+d(1) = 0;                   % Initial distance [m]
 n = 1;                      % Iterator
 
 %% Accelerate until travel 1/4 miles
@@ -49,26 +50,30 @@ while (dist < (0.25*1609.34))
     end
     t(n+1) = t(n) + dT;
     dist = trapz(t(1:length(v)), v);
+    d(n+1) = trapz(t(1:length(v)), v);
     n = n + 1;
 end
 distFinal = trapz(t, v)     % Total distance travelled [m]
 v_mph = ((v*3600)/1609.34);     % [m/s] to [mph]
 
-%% Plot Power and Torque vs. Speed
+%% Plot Power vs. Speed
 figure
-yyaxis right
-plot(v*3.6,P/1000)
-title("Power and Torque vs. Speed")
-xlabel('Speed [km/h]')
+plot(d,P/1000)
+title("Power vs. Distance")
+xlabel('Distance [m]')
 ylabel('Power [kW]')
-yyaxis left
-plot(v*3.6,T)
+
+%% Plot Torque vs. Distance
+figure
+plot(d,T)
+title("Torque vs. Distance")
+xlabel('Distance [m]')
 ylabel('Torque [N-m]')
 
-%% Plot speed vs. time
+%% Plot Speed vs. Distance
 figure
-plot(t, v*3.6)
-title("Speed vs. Time")
-xlabel('Time [s]')
-ylabel('Velocity [km/h]')
+plot(d, v*3.6)
+title("Speed vs. Distance")
+xlabel('Time [m]')
+ylabel('Speed [km/h]')
 t(end) %time it takes to complete the quarter mile
