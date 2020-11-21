@@ -53,8 +53,11 @@ while (dist < (0.25*1609.34))
     d(n+1) = trapz(t(1:length(v)), v);
     n = n + 1;
 end
+Pravg = mean(P);            % Average Power [W]
+Ebt = trapz(t, P);          % Energy Required by Battery [W-s]
+Ebt_kwh = Ebt/(1000*3600);  % Energy Required by Battery [kW-h]
 distFinal = trapz(t, v)     % Total distance travelled [m]
-v_mph = ((v*3600)/1609.34);     % [m/s] to [mph]
+v_mph = ((v*3600)/1609.34); % [m/s] to [mph]
 
 %% Plot Power vs. Speed
 figure
