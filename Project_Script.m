@@ -10,7 +10,9 @@ close all;
 clc;
 
 %% Declare bike parameters and constants
-Prrated = 65280;            % Rated power [W]
+Ipk = 1360;                 % Peak current [A]
+Vpk = 48;                   % Peak voltage [V]
+Prrated = Ipk*Vpk;          % Rated power [W]
 Trrated = 210*1.3563;       % Rated torque [N-m]
 rw = 0.3;                   % Front wheel radius [m] - (back tire is 0.32 m)
 Ngb = 2;                    % Gearbox ratio
