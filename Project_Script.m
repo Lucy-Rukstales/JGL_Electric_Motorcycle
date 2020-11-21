@@ -2,7 +2,7 @@
 % ECE 497
 % Gillian Holman, Lucy Rukstales, Jacob Huff
 % Acceleration to 1/4 mile
-% 11/1/2020
+% 11/21/2020
 %////////////////////////////////////////////////////////////////////////////////
 
 clear all;
